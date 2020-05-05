@@ -1,6 +1,7 @@
 version: '3.7'
 
 services:
+  ### elasticsearch
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
     container_name: elasticsearch
@@ -15,7 +16,10 @@ services:
       - esdata1:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
-
+    networks: 
+      internal: 
+        ipv4_address: 172.17.1.2
+  ### kibana
   kibana:
     image: docker.elastic.co/kibana/kibana:6.5.4
     container_name: kibana
@@ -23,14 +27,24 @@ services:
       ELASTICSEARCH_URL: "http://elasticsearch:9200"
     ports:
       - 5601:5601
+    networks: 
+      internal: 
+        ipv4_address: 172.17.1.3
     depends_on:
       - elasticsearch
-
+  ### application
   web:
-    image: build/Dockerfile
+    image: web
+    container_name: web
+    build:
+      context: ../
+      dockerfile: build/Dockerfile
     container_name: web
     ports:
       - 8787:80
+    networks: 
+      external: : 
+        ipv4_address: 172.17.2.2
 
 volumes:
   esdata1:
@@ -38,5 +52,12 @@ volumes:
 
 networks:
   internal:
-    name: internal
-    subnet: 172.17.2.0/24
+    driver: bridge
+    ipam:
+      config:  
+        - subnet: 172.17.1.0/24
+  external:
+    driver: bridge
+    ipam:
+      config:  
+        - subnet: 172.17.2.0/24
