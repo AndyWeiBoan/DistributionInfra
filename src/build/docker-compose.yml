@@ -1,10 +1,6 @@
 version: '3.7'
 
 services:
-  # Elasticsearch requires your vm.max_map_count set to 262144
-  # Default will be 65530
-  # sysctl -w vm.max_map_count=262144
-  # Add this to /etc/sysctl.conf for making it permanent
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
     container_name: elasticsearch
@@ -30,6 +26,17 @@ services:
     depends_on:
       - elasticsearch
 
+  web:
+    image: build/Dockerfile
+    container_name: web
+    ports:
+      - 8787:80
+
 volumes:
   esdata1:
     driver: local
+
+networks:
+  internal:
+    name: internal
+    subnet: 172.17.2.0/24
