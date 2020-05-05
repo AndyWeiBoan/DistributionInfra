@@ -4,7 +4,6 @@ COPY /app /app
 WORKDIR /app
 RUN dotnet publish $project_name -o /publish --configuration Release
 
-### Publish Stage
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 ARG project_name
 WORKDIR /app
