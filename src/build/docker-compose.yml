@@ -18,7 +18,7 @@ services:
       - 9200:9200
     networks: 
       internal: 
-        ipv4_address: 172.17.1.2
+        ipv4_address: 172.16.1.2
   ### kibana
   kibana:
     image: docker.elastic.co/kibana/kibana:6.5.4
@@ -29,7 +29,7 @@ services:
       - 5601:5601
     networks: 
       internal: 
-        ipv4_address: 172.17.1.3
+        ipv4_address: 172.16.1.3
     depends_on:
       - elasticsearch
   ### application
@@ -46,7 +46,7 @@ services:
       - 8787:80
     networks: 
       external:
-        ipv4_address: 172.17.2.2
+        ipv4_address: 172.16.2.2
 
 volumes:
   esdata1:
@@ -54,12 +54,15 @@ volumes:
 
 networks:
   internal:
+    name: internal
     driver: bridge
     ipam:
       config:  
-        - subnet: 172.17.1.0/24
+        - subnet: 172.16.1.0/24
+  
   external:
+    name: external
     driver: bridge
     ipam:
       config:  
-        - subnet: 172.17.2.0/24
+        - subnet: 172.16.2.0/24
