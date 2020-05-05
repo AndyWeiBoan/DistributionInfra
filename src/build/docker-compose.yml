@@ -39,11 +39,13 @@ services:
     build:
       context: ../
       dockerfile: build/Dockerfile
+      args:
+        - project_name=web
     container_name: web
     ports:
       - 8787:80
     networks: 
-      external: : 
+      external:
         ipv4_address: 172.17.2.2
 
 volumes:
