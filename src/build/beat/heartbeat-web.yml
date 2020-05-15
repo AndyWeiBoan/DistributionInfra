@@ -1,0 +1,22 @@
+- type: http
+  enabled: true
+  name: web-health
+  id: web-health
+  timeout: 16s
+  schedule: '@every 30s'
+  urls:
+    - http://web/health
+  check.request:
+    method: GET
+    headers:
+      'Content-Type': 'application/json' 
+  check.response:
+    status: 200
+
+output.elasticsearch:
+  hosts: '${ELASTICSEARCH_HOSTS:elasticsearch:9200}'
+  username: '${ELASTICSEARCH_USERNAME:}'
+  password: '${ELASTICSEARCH_PASSWORD:}'
+
+setup.kibana:
+  host: "kibana:5601"

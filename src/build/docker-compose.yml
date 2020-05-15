@@ -1,28 +1,38 @@
 version: '3.7'
 
 services:
-  ### elasticsearch
-  ### sudo sysctl -w vm.max_map_count=262144
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
-    container_name: elasticsearch
+  heartbeat:
+    image: heartbeat
+    container_name: heartbeat
+    build:
+      context: ../
+      dockerfile: build/heartbeat.Dockerfile
+    command: --strict.perms=false -e
     environment:
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - esdata1:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
+      - setup.kibana.host=kibana:5601
+      - output.elasticsearch.hosts=["elasticsearch:9200"]
+    networks: 
+      internal: 
+        ipv4_address: 172.16.1.4
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    image: elasticsearch:7.6.1
+    container_name: elasticsearch
+    ports:      
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: changeme
+      discovery.type: single-node
     networks: 
       internal: 
         ipv4_address: 172.16.1.2
   ### kibana
   kibana:
-    image: docker.elastic.co/kibana/kibana:6.5.4
+    image: kibana:7.6.1
     container_name: kibana
     environment:
       ELASTICSEARCH_URL: "http://elasticsearch:9200"
@@ -46,12 +56,8 @@ services:
     ports:
       - 8787:80
     networks: 
-      external:
-        ipv4_address: 172.16.2.2
-
-volumes:
-  esdata1:
-    driver: local
+      internal:
+        ipv4_address: 172.16.1.5
 
 networks:
   internal:
@@ -60,10 +66,3 @@ networks:
     ipam:
       config:  
         - subnet: 172.16.1.0/24
-  
-  external:
-    name: external
-    driver: bridge
-    ipam:
-      config:  
-        - subnet: 172.16.2.0/24
