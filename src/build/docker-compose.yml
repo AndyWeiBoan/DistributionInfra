@@ -18,7 +18,7 @@ services:
       - elasticsearch
 
   elasticsearch:
-    image: elasticsearch:7.6.1
+    image: elasticsearch:7.7.0
     container_name: elasticsearch
     ports:      
       - "9200:9200"
@@ -32,7 +32,7 @@ services:
         ipv4_address: 172.16.1.2
   ### kibana
   kibana:
-    image: kibana:7.6.1
+    image: kibana:7.7.0
     container_name: kibana
     environment:
       ELASTICSEARCH_URL: "http://elasticsearch:9200"

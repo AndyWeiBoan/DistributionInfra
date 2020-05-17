@@ -1,11 +1,12 @@
+# This config simulate a servcie failure
 - type: http
   enabled: true
-  name: web-health
-  id: web-health
+  name: web-health-2
+  id: web-health-2
   timeout: 16s
   schedule: '@every 30s'
   urls:
-    - http://web/health
+    - http://web2/health
   check.request:
     method: GET
     headers:
