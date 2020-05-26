@@ -1,4 +1,4 @@
-FROM docker.elastic.co/beats/heartbeat:7.7.0
+FROM docker.elastic.co/beats/heartbeat:7.6.1
 COPY /build/beat/heartbeat.yml /usr/share/heartbeat/heartbeat.yml
 COPY /build/beat/heartbeat-*.yml /usr/share/heartbeat/monitors.d/
 USER root 

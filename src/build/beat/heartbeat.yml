@@ -9,6 +9,20 @@ heartbeat.config.monitors:
   # How often to check for changes
   reload.period: 30s
 
+heartbeat.monitors:
+- type: http
+  enabled: true
+  name: elasticsearch
+  id: elasticsearch
+  schedule: '@every 30s'
+  urls: ["http://elasticsearch:9200"]
+  ipv4: true
+  timeout: 5s
+  check.request:
+    method: "GET"
+  check.response:
+    status: 200
+
 output.elasticsearch:
   hosts: '${ELASTICSEARCH_HOSTS:elasticsearch:9200}'
   username: '${ELASTICSEARCH_USERNAME:}'
