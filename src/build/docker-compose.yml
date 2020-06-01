@@ -6,7 +6,7 @@ services:
     container_name: heartbeat
     build:
       context: ../
-      dockerfile: build/heartbeat.Dockerfile
+      dockerfile: build/beat/heartbeat.Dockerfile
     command: --strict.perms=false -e
     environment:
       - setup.kibana.host=kibana:5601
@@ -22,7 +22,7 @@ services:
     container_name: elasticsearch
     build:
       context: ../
-      dockerfile: build/elasticsearch.Dockerfile
+      dockerfile: build/elasticsearch/elasticsearch.Dockerfile
       args:
         plugin_url: https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-alerting/opendistro_alerting-1.7.0.0.zip
     ports:      
@@ -41,7 +41,7 @@ services:
     container_name: kibana 
     build:
       context: ../
-      dockerfile: build/kibana.Dockerfile
+      dockerfile: build/kibana/kibana.Dockerfile
       args:
         plugin_url: https://d3g5vo6xdbdb9a.cloudfront.net/downloads/kibana-plugins/opendistro-alerting/opendistro-alerting-1.7.0.0.zip
     environment:
