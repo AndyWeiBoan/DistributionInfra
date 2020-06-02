@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using System;
 using System.Reflection;
+using NLog;
 
 namespace web
 {
