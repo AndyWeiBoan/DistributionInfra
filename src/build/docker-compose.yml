@@ -24,7 +24,7 @@ services:
       context: ../
       dockerfile: build/elasticsearch/elasticsearch.Dockerfile
       args:
-        plugin_url: https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-alerting/opendistro_alerting-1.7.0.0.zip
+        plugin_url: https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-alerting/opendistro_alerting-1.8.0.0.zip
     ports:      
       - "9200:9200"
       - "9300:9300"
@@ -43,7 +43,7 @@ services:
       context: ../
       dockerfile: build/kibana/kibana.Dockerfile
       args:
-        plugin_url: https://d3g5vo6xdbdb9a.cloudfront.net/downloads/kibana-plugins/opendistro-alerting/opendistro-alerting-1.7.0.0.zip
+        plugin_url: https://d3g5vo6xdbdb9a.cloudfront.net/downloads/kibana-plugins/opendistro-alerting/opendistro-alerting-1.8.0.0.zip
     environment:
       ELASTICSEARCH_URL: "http://elasticsearch:9200"
     ports:
