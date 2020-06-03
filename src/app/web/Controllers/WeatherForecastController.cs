@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace web.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -34,6 +33,18 @@ namespace web.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet("error")]
+        public IActionResult Error() {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet("test")]
+        public IActionResult Test() {
+            this._logger.LogInformation("test 123");
+
+            return Ok();
         }
     }
 }
