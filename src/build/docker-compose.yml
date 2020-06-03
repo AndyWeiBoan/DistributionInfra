@@ -7,6 +7,8 @@ services:
     build:
       context: ../
       dockerfile: build/beat/heartbeat.Dockerfile
+      args:
+        - version=${ELASTIC_STACK_VERSION}
     command: --strict.perms=false -e
     environment:
       - setup.kibana.host=kibana:5601
@@ -16,6 +18,7 @@ services:
         ipv4_address: 172.16.1.4
     depends_on:
       - elasticsearch
+
   ### elasticsearch
   elasticsearch:
     image: elasticsearch
@@ -24,7 +27,8 @@ services:
       context: ../
       dockerfile: build/elasticsearch/elasticsearch.Dockerfile
       args:
-        plugin_url: https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-alerting/opendistro_alerting-1.8.0.0.zip
+        - plugin_url=${ALERTING_ELASTIC_URL}
+        - version=${ELASTIC_STACK_VERSION}
     ports:      
       - "9200:9200"
       - "9300:9300"
@@ -35,6 +39,7 @@ services:
     networks: 
       internal: 
         ipv4_address: 172.16.1.2
+
   ### kibana
   kibana:
     image: kibana
@@ -43,7 +48,8 @@ services:
       context: ../
       dockerfile: build/kibana/kibana.Dockerfile
       args:
-        plugin_url: https://d3g5vo6xdbdb9a.cloudfront.net/downloads/kibana-plugins/opendistro-alerting/opendistro-alerting-1.8.0.0.zip
+        - plugin_url=${ALERTING_KIBANA_URL}
+        - version=${ELASTIC_STACK_VERSION}
     environment:
       ELASTICSEARCH_URL: "http://elasticsearch:9200"
     ports:
@@ -53,6 +59,7 @@ services:
         ipv4_address: 172.16.1.3
     depends_on:
       - elasticsearch
+
   ### application
   web:
     image: web
@@ -62,15 +69,16 @@ services:
       dockerfile: build/web.Dockerfile
       args:
         - project_name=web
+        - version=3.1
     container_name: web
     volumes:
-      # this is wsl mount directory
-      - /C/hs-workspace/heartbeat/src/logs/web/:/data/log/web/
+      - ${MNT_WEB_LOG}
     ports:
       - 8787:80
     networks: 
       internal:
         ipv4_address: 172.16.1.5
+
   ### fluentd
   fluentd:
     image: fluentd
@@ -80,11 +88,11 @@ services:
       context: ../
       dockerfile: build/fluentd/fluentd.Dockerfile
     environment:
-      - FLUENTD_CONF=fluent.conf
+      - FLUENTD_CONF=${FLUENT_STARTUP_CONFT}
       - FLUENTD_OPT=
     volumes:
-      - /C/hs-workspace/heartbeat/src/build/fluentd/config/:/fluentd/etc/
-      - /C/hs-workspace/heartbeat/src/logs/:/logs/
+      - ${MNT_FLUENT_CONFIG}
+      - ${MNT_LOG_INPUT}
     ports:
       - "24220:24220/tcp"
       - "24220:24220/udp"
@@ -93,6 +101,7 @@ services:
         ipv4_address: 172.16.1.6
     depends_on:
       - elasticsearch
+
 networks:
   internal:
     name: internal

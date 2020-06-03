@@ -1,4 +1,5 @@
-FROM docker.elastic.co/kibana/kibana:7.7.0
+ARG version
+FROM docker.elastic.co/kibana/kibana:$version
 ARG plugin_url
 RUN /usr/share/kibana/bin/kibana-plugin install $plugin_url
 USER kibana

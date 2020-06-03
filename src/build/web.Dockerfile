@@ -1,4 +1,5 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS dotnet-build-env
+ARG version
+FROM mcr.microsoft.com/dotnet/core/sdk:$version AS dotnet-build-env
 ARG project_name
 COPY /app /app
 WORKDIR /app
