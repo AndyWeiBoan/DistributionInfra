@@ -63,12 +63,36 @@ services:
       args:
         - project_name=web
     container_name: web
+    volumes:
+      # this is wsl mount directory
+      - /C/hs-workspace/heartbeat/src/logs/web/:/data/log/web/
     ports:
       - 8787:80
     networks: 
       internal:
         ipv4_address: 172.16.1.5
-
+  ### fluentd
+  fluentd:
+    image: fluentd
+    container_name: fluentd
+    restart: always
+    build:
+      context: ../
+      dockerfile: build/fluentd/fluentd.Dockerfile
+    environment:
+      - FLUENTD_CONF=fluent.conf
+      - FLUENTD_OPT=
+    volumes:
+      - /C/hs-workspace/heartbeat/src/build/fluentd/config/:/fluentd/etc/
+      - /C/hs-workspace/heartbeat/src/logs/:/logs/
+    ports:
+      - "24220:24220/tcp"
+      - "24220:24220/udp"
+    networks: 
+      internal:
+        ipv4_address: 172.16.1.6
+    depends_on:
+      - elasticsearch
 networks:
   internal:
     name: internal
