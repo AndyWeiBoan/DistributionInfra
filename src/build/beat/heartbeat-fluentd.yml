@@ -1,0 +1,21 @@
+- type: http
+  enabled: true
+  name: fluentd-health
+  id: fluentd-health
+  timeout: 16s
+  schedule: '@every 30s'
+  urls:
+    - http://172.16.1.6:24220/api/plugins  
+  response:
+    # save response body into elasticsearch
+    include_body: always 
+  check.request:
+    method: GET
+    headers:
+      'Content-Type': 'application/json' 
+  check.response:
+    status: 200
+- output.elasticsearch:
+  hosts: '${ELASTICSEARCH_HOSTS:elasticsearch:9200}'
+  username: '${ELASTICSEARCH_USERNAME:}'
+  password: '${ELASTICSEARCH_PASSWORD:}'
