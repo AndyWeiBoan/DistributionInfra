@@ -80,27 +80,43 @@ services:
         ipv4_address: 172.16.1.5
 
   ### fluentd
-  fluentd:
-    image: fluentd
-    container_name: fluentd
-    restart: always
-    build:
-      context: ../
-      dockerfile: build/fluentd/fluentd.Dockerfile
-    environment:
-      - FLUENTD_CONF=${FLUENT_STARTUP_CONFT}
-      - FLUENTD_OPT=
-    volumes:
-      - ${MNT_FLUENT_CONFIG}
-      - ${MNT_LOG_INPUT}
+  # fluentd:
+  #   image: fluentd
+  #   container_name: fluentd
+  #   restart: always
+  #   build:
+  #     context: ../
+  #     dockerfile: build/fluentd/fluentd.Dockerfile
+  #   environment:
+  #     - FLUENTD_CONF=${FLUENT_STARTUP_CONFT}
+  #     - FLUENTD_OPT=
+  #   volumes:
+  #     - ${MNT_FLUENT_CONFIG}
+  #     - ${MNT_LOG_INPUT}
+  #   ports:
+  #     - "24220:24220/tcp"
+  #     - "24220:24220/udp"
+  #   networks: 
+  #     internal:
+  #       ipv4_address: 172.16.1.6
+  #   depends_on:
+  #     - elasticsearch
+  
+  ### fluent-bit
+  fluentbit:
+    image: fluent/fluent-bit:1.4
+    container_name: fluentbit
     ports:
-      - "24220:24220/tcp"
-      - "24220:24220/udp"
+      - "24225:24224/tcp"
+      - "24225:24224/udp"
+      - "2020:2020/tcp"
+    volumes:
+      - ${MNT_FLUENT_BIT_CONF}
+      - ${MNT_LOG_INPUT}
     networks: 
       internal:
-        ipv4_address: 172.16.1.6
-    depends_on:
-      - elasticsearch
+        ipv4_address: 172.16.1.7
+    depends_on: [ elasticsearch, web ]
 
 networks:
   internal:
