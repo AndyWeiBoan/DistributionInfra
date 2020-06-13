@@ -6,6 +6,9 @@
   schedule: '@every 30s'
   urls:
     - http://web/health
+  response:
+    # save response body into elasticsearch
+    include_body: always 
   check.request:
     method: GET
     headers:
